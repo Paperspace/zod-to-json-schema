@@ -56,7 +56,9 @@ const zodToJsonSchema = <Target extends Targets = "jsonSchema7">(
       ? definitions
         ? {
             ...main,
-            [refs.definitionPath]: definitions,
+            ...(refs.target !== "openApi3" && {
+              [refs.definitionPath]: definitions,
+            }),
           }
         : main
       : {

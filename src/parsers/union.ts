@@ -60,7 +60,7 @@ export function parseUnionDef(
     }, []);
 
     return {
-      type: types.length > 1 ? types : types[0],
+      type: types.length > 1 ? types : (types[0] as JsonSchema7Primitive),
     };
   } else if (
     options.every((x) => x._def.typeName === "ZodLiteral" && !x.description)
@@ -94,7 +94,10 @@ export function parseUnionDef(
 
       const uniqueTypes = types.filter((x, i, a) => a.indexOf(x) === i);
       return {
-        type: uniqueTypes.length > 1 ? uniqueTypes : uniqueTypes[0],
+        type:
+          uniqueTypes.length > 1
+            ? uniqueTypes
+            : (uniqueTypes[0] as JsonSchema7Primitive),
         enum: options.reduce((acc, x) => {
           return acc.includes(x._def.value) ? acc : [...acc, x._def.value];
         }, [] as (string | number | bigint | boolean | null)[]),

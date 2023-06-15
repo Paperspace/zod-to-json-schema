@@ -10,13 +10,17 @@ export function parseNativeEnumDef(
 ): JsonSchema7NativeEnumType {
   const object = def.values;
   const actualKeys = Object.keys(def.values).filter((key: string) => {
-    return typeof object[object[key]] !== "number";
+    const subKey = object[key];
+    if (subKey === undefined) return false;
+    return typeof object[subKey] !== "number";
   });
 
   const actualValues = actualKeys.map((key: string) => object[key]);
 
   const parsedTypes = Array.from(
-    new Set(actualValues.map((values: string | number) => typeof values))
+    new Set(
+      actualValues.map((values: string | number | undefined) => typeof values)
+    )
   );
 
   return {
@@ -26,6 +30,9 @@ export function parseNativeEnumDef(
           ? "string"
           : "number"
         : ["string", "number"],
-    enum: actualValues,
+    enum: actualValues.filter((value) => value !== undefined) as (
+      | string
+      | number
+    )[],
   };
 }
